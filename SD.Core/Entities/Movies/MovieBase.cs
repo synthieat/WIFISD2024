@@ -7,18 +7,17 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SD.Core.Entities
+namespace SD.Core.Entities.Movies
 {
     public class MovieBase
     {
         [Key] /* Wäre hier jetzt überflüssig */
         public Guid Id { get; set; }
-        [MaxLength(128)]
+        [MaxLength(128), MinLength(2)]
         [Required]
-        [MinLength(2)]
         public string Title { get; set; }
 
-        public int GenreId { get; set; }    
+        public int GenreId { get; set; }
 
         public string MediumTypeCode { get; set; }
 
@@ -27,7 +26,6 @@ namespace SD.Core.Entities
 
         [Column(TypeName = "date")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-
         public DateTime ReleaseDate { get; set; }
     }
 }
