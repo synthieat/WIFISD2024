@@ -9,6 +9,14 @@ using System.Threading.Tasks;
 
 namespace SD.Core.Entities.Movies
 {
+    public enum Ratings: byte
+    {
+        Unrated = 0,
+        Bad = 10,
+        Medium = 20,
+        Great = 30
+    }
+
     public class MovieBase
     {
         [Key] /* Wäre hier jetzt überflüssig */
@@ -27,5 +35,7 @@ namespace SD.Core.Entities.Movies
         [Column(TypeName = "date")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime ReleaseDate { get; set; }
+
+        public Ratings Rating { get; set; } = 0;
     }
 }

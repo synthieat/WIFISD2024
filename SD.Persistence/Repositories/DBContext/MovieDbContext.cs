@@ -81,7 +81,8 @@ namespace SD.Persistence.Repositories.DBContext
                     Price = 4.9M,
                     MediumTypeCode = "VHS",
                     ReleaseDate = new DateTime(1985, 4, 13),
-                    GenreId = 1
+                    GenreId = 1,
+                    Rating = Ratings.Medium
                 },
 
                 new Movie
@@ -91,7 +92,8 @@ namespace SD.Persistence.Repositories.DBContext
                     GenreId = 3,                    
                     MediumTypeCode = "BR3D",
                     ReleaseDate = new DateTime(2016, 5, 30),
-                    Price = 14.9M
+                    Price = 14.9M,
+                    Rating = Ratings.Great
                 },
 
                 new Movie
@@ -101,7 +103,8 @@ namespace SD.Persistence.Repositories.DBContext
                     GenreId = 3,
                     MediumTypeCode = "DVD",
                     ReleaseDate = new DateTime(1987, 4, 13),
-                    Price = 9.9M
+                    Price = 9.9M,
+                    Rating = Ratings.Medium
                 },
 
                 new Movie
@@ -111,7 +114,8 @@ namespace SD.Persistence.Repositories.DBContext
                     GenreId = 2,
                     MediumTypeCode = "BR",
                     ReleaseDate = new DateTime(2005, 11, 15),
-                    Price = 12.9M
+                    Price = 12.9M,
+                    Rating = Ratings.Bad
                 }
 
             );

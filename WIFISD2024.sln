@@ -13,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{CE29
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.Core", "SD.Core\SD.Core.csproj", "{E1FEE531-DFBE-4B61-A77E-C9FDC3B58516}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SD.Persistence", "SD.Persistence\SD.Persistence.csproj", "{6F86E7D2-14CD-4A43-9769-1F651BEC0F18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SD.Persistence", "SD.Persistence\SD.Persistence.csproj", "{6F86E7D2-14CD-4A43-9769-1F651BEC0F18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SD.Application", "SD.Application\SD.Application.csproj", "{8F678824-072E-40EF-98F2-3F27777E00D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,12 +31,17 @@ Global
 		{6F86E7D2-14CD-4A43-9769-1F651BEC0F18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F86E7D2-14CD-4A43-9769-1F651BEC0F18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F86E7D2-14CD-4A43-9769-1F651BEC0F18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F678824-072E-40EF-98F2-3F27777E00D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F678824-072E-40EF-98F2-3F27777E00D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F678824-072E-40EF-98F2-3F27777E00D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F678824-072E-40EF-98F2-3F27777E00D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E1FEE531-DFBE-4B61-A77E-C9FDC3B58516} = {5F92E908-5AE4-4550-925C-A83D85508764}
+		{8F678824-072E-40EF-98F2-3F27777E00D8} = {9E078A10-7F6F-4765-9914-9F52C9579C91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A35B5587-F24B-4C10-9EE7-631C81A9E044}
