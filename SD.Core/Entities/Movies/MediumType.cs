@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SD.Core.Entities.Movies
 {
-    public class MediumType
+    public class MediumType : IEntity
     {
         public MediumType()
         {

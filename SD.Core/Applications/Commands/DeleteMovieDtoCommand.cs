@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SD.Core.Applications.Commands
 {
-    public class DeleteMovieDtoCommand : IRequest<MovieDto>
+    public class DeleteMovieDtoCommand : IRequest
     {
         public Guid Id { get; set; }
     }
