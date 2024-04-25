@@ -45,7 +45,12 @@ namespace SD.Application.Movies
 
         public async Task<IEnumerable<MovieDto>> Handle(GetMovieDtosQuery request, CancellationToken cancellationToken)
         {
-            return await this.movieRepository.QueryFrom<Movie>().Select(s => MovieDto.MapFrom(s)).ToListAsync(cancellationToken);
+            var movieQuery = this.movieRepository.QueryFrom<Movie>()
+                .Where(w => (string.IsNullOrWhiteSpace(request.MediumTypeCode) || w.MediumTypeCode.Contains(request.MediumTypeCode)) 
+                       && (!request.GenreId.HasValue || w.GenreId == request.GenreId))
+                .Take(request.Take).Skip(request.Skip);
+            
+            return await movieQuery.Select(s => MovieDto.MapFrom(s)).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Genre>> Handle(GetGenresQuery request, CancellationToken cancellationToken)
