@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SD.Common.Extensions;
 
 namespace SD.Application.Movies
 {
@@ -29,7 +30,15 @@ namespace SD.Application.Movies
         public async Task<MovieDto> Handle(GetMovieDtoQuery request, CancellationToken cancellationToken)
         {
 
-            return await this.movieRepository.QueryFrom<Movie>(w => w.Id == request.Id).Select(s => MovieDto.MapFrom(s)).FirstOrDefaultAsync(cancellationToken);
+            var result = await this.movieRepository.GetMoviesWithNavigationPropertiesQuery(w => w.Id == request.Id)
+                                                   .Select(s => MovieDto.MapFrom(s)).FirstOrDefaultAsync(cancellationToken);
+
+            if(result != null)
+            {
+                result.LocalizedRating = result.Rating.GetDescription();
+            }           
+
+            return result;
 
             /* Old fashion code
             var movie = await this.movieRepository.QueryFrom<Movie>(w => w.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
@@ -45,12 +54,19 @@ namespace SD.Application.Movies
 
         public async Task<IEnumerable<MovieDto>> Handle(GetMovieDtosQuery request, CancellationToken cancellationToken)
         {
-            var movieQuery = this.movieRepository.QueryFrom<Movie>()
+            var movieQuery = this.movieRepository.GetMoviesWithNavigationPropertiesQuery()
                 .Where(w => (string.IsNullOrWhiteSpace(request.MediumTypeCode) || w.MediumTypeCode.Contains(request.MediumTypeCode)) 
                        && (!request.GenreId.HasValue || w.GenreId == request.GenreId))
                 .Take(request.Take).Skip(request.Skip);
             
-            return await movieQuery.Select(s => MovieDto.MapFrom(s)).ToListAsync(cancellationToken);
+            var result = await movieQuery.Select(s => MovieDto.MapFrom(s)).ToListAsync(cancellationToken);
+
+            result.ForEach(r =>
+            {
+                r.LocalizedRating = r.Rating.GetDescription();
+            });
+
+            return result;
         }
 
         public async Task<IEnumerable<Genre>> Handle(GetGenresQuery request, CancellationToken cancellationToken)

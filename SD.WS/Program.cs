@@ -5,6 +5,8 @@ using SD.Application.Extensions;
 using SD.Application.Movies;
 using SD.Persistence.Extensions;
 using SD.Persistence.Repositories.DBContext;
+using SD.Rescources;
+using SD.Rescources.Attributes;
 using System.Reflection;
 
 namespace SD.WS
@@ -14,7 +16,6 @@ namespace SD.WS
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
 
             /* DBContext registrieren */
             var connectionString = builder.Configuration.GetConnectionString("MovieDbContext");
@@ -52,7 +53,11 @@ namespace SD.WS
 
             app.MapControllers();
 
+            LocalizedDescriptionAttribute.Setup(new System.Resources.ResourceManager(typeof(BasicRes)));
+
             app.Run();
+
+
         }
     }
 }

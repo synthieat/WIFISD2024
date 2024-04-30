@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SD.Rescources;
+using SD.Rescources.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,9 +13,13 @@ namespace SD.Core.Entities.Movies
 {
     public enum Ratings: byte
     {
+        [LocalizedDescription(nameof(BasicRes.Ratings_0))]
         Unrated = 0,
+        [LocalizedDescription(nameof(BasicRes.Ratings_10))]
         Bad = 10,
+        [LocalizedDescription(nameof(BasicRes.Ratings_20))]
         Medium = 20,
+        [LocalizedDescription(nameof(BasicRes.Ratings_30))]
         Great = 30
     }
 
