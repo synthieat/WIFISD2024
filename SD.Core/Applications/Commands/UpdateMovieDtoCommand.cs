@@ -10,6 +10,7 @@ namespace SD.Core.Applications.Commands
 {
     public class UpdateMovieDtoCommand : IRequest<MovieDto>
     {
+      
         public Guid Id { get; set; }
 
         public MovieDto MovieDto { get; set; }

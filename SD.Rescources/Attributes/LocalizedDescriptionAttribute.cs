@@ -24,6 +24,7 @@ namespace SD.Rescources.Attributes
         {
             get => this.resourceKey != null ? _resourceManager.GetString(this.resourceKey) : null;
         }
+
         public static void Setup(ResourceManager resourceManager)
         {
             _resourceManager = resourceManager;
