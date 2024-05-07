@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SD.Core.Applications.Commands;
@@ -8,7 +9,7 @@ using System.Net;
 
 namespace SD.WS.Controllers
 {
-
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class MovieController : MediatRBaseController

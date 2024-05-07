@@ -1,8 +1,12 @@
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using SD.Application.Authentication;
 using SD.Application.Extensions;
 using SD.Application.Movies;
+using SD.Common.Services;
 using SD.Persistence.Extensions;
 using SD.Persistence.Repositories.DBContext;
 using SD.Rescources;
@@ -27,13 +31,56 @@ namespace SD.WS
 
             // Add services to the container.
             builder.Services.AddControllers();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
             /* MediatR registrieren */
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(MovieQueryHandler).GetTypeInfo().Assembly));
-            
-            builder.Services.AddSwaggerGen();
+
+            /* UserService registrieren */
+            builder.Services.AddScoped<IUserService, UserService>();
+
+            /* BasicAuthection handler registrieren */
+            builder.Services.AddAuthentication(nameof(BasicAuthenticationHandler))
+                            .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>(nameof(BasicAuthenticationHandler), null);
+
+
+
+            builder.Services.AddSwaggerGen(g =>
+            {
+                g.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "Wifie SW-Developer 2023-2024",
+                    Version = "v1",
+                    Contact = new Microsoft.OpenApi.Models.OpenApiContact { Email = "horst.schneider@hotmail.com", Name = "Horst Schneider" }
+                });
+
+                g.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    In = ParameterLocation.Header,
+                    Description = "Basic Authentication header usering basic scheme"
+                });
+
+                g.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "basic"
+                            }
+                        },
+                        new string []{ }
+                    }
+                });
+
+            });
 
             builder.WebHost.UseIISIntegration();
 
@@ -48,6 +95,7 @@ namespace SD.WS
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
