@@ -21,6 +21,7 @@ namespace SD.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Configuration.AddUserSecrets(Assembly.GetExecutingAssembly());
 
             // Add services to the container.
             var identityDbConnectionString = builder.Configuration.GetConnectionString("IdentityDbConnection") ?? throw new InvalidOperationException("Connection string 'IdentityDbConnection' not found.");
@@ -28,15 +29,12 @@ namespace SD.Web
 
             var movieDbConnectionString = builder.Configuration.GetConnectionString("MovieDbContext");
             builder.Services.AddDbContext<MovieDbContext>(options => options.UseSqlServer(movieDbConnectionString));
-
-            builder.Configuration.AddUserSecrets(Assembly.GetExecutingAssembly(), true);
-
+            
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                             .AddEntityFrameworkStores<ApplicationDbContext>();
-
-
+            
             /* Bootstrapping von Handler und Repositories */
             builder.Services.RegisterRepositories();
             builder.Services.RegisterApplicationService();
@@ -69,7 +67,7 @@ namespace SD.Web
 
                         
             builder.Services.AddControllersWithViews();
-
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

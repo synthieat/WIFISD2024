@@ -4,6 +4,7 @@ using SD.Core.Entities.Movies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -134,8 +135,9 @@ namespace SD.Persistence.Repositories.DBContext
 #endif
 
             var configurationBuilder = new ConfigurationBuilder()
-                                            .SetBasePath(currentDirectory)
-                                            .AddJsonFile("AppSettings.json", optional: false, reloadOnChange: true);
+                                            .SetBasePath(currentDirectory)                                            
+                                            .AddJsonFile("AppSettings.json", optional: false, reloadOnChange: true)
+                                            .AddUserSecrets(Assembly.GetExecutingAssembly());
 
             var configuration = configurationBuilder.Build();
             var connectionString = configuration.GetConnectionString(nameof(MovieDbContext));
