@@ -1,0 +1,66 @@
+﻿@using SD.Rescources
+@model IEnumerable<MovieDto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a href="/Movies/Create">@BasicRes.CreateNew</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @BasicRes.Genre 
+            </th>
+            <th>
+                @BasicRes.MediumType
+            </th>
+            <th>
+                @BasicRes.Title
+            </th>
+            <th>
+                @BasicRes.Price
+            </th>
+            <th>
+                @BasicRes.ReleaseDate
+            </th>
+            <th>
+                @BasicRes.Rating
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.GenreName
+            </td>
+            <td>
+                @item.MediumTypeName
+            </td>
+            <td>
+               @item.Title Hallo Welt
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReleaseDate)
+            </td>
+            <td>
+                @item.LocalizedRating
+            </td>
+            <td>
+                <a href="/Movies/Edit/@item.Id">@BasicRes.Edit</a> |
+                <a href="/Movies/Details/@item.Id">@BasicRes.Details</a> |
+                <a href="/Movies/Delete/@item.Id">@BasicRes.Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -33,6 +33,7 @@ namespace SD.Core.Entities.Movies
 
         public int GenreId { get; set; }
 
+
         public string MediumTypeCode { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N}")]
