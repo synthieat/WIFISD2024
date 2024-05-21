@@ -16,7 +16,9 @@
 <environment exclude="Development">
     <script src="~/lib/jquery-validation-globalize.1.1.0/jquery.validate.globalize.min.js"></script>
  </environment>
-<!-- fetch files -->
+<!-- fetch files
+     Load latest cldr-data => npm install cldr-data
+-->
 <script>
     $.when(
         $.getJSON("/lib/cldr-data/supplemental/likelySubtags.json"),
