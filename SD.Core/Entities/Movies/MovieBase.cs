@@ -27,22 +27,29 @@ namespace SD.Core.Entities.Movies
     {
         [Key] /* Wäre hier jetzt überflüssig */
         public Guid Id { get; set; }
+
+
         [MaxLength(128), MinLength(2)]
         [Required]
+        [Display(Name = nameof(MovieBase.Title), ResourceType = typeof(BasicRes))]
         public string Title { get; set; }
 
+        [Display(Name = "Genre", ResourceType = typeof(BasicRes))]
         public int GenreId { get; set; }
 
-
+        [Display(Name = "MediumType", ResourceType = typeof(BasicRes))]
         public string MediumTypeCode { get; set; }
 
+        [Display(Name = nameof(MovieBase.Price), ResourceType = typeof(BasicRes))]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N}")]
         public decimal Price { get; set; }
 
         [Column(TypeName = "date")]
+        [Display(Name = nameof(MovieBase.ReleaseDate), ResourceType = typeof(BasicRes))]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime ReleaseDate { get; set; }
 
+        [Display(Name = nameof(MovieBase.Rating), ResourceType = typeof(BasicRes))]
         public Ratings Rating { get; set; } = 0;
     }
 }

@@ -24,3 +24,7 @@ body {
 dt {
     font-weight: 600;
 }
+
+.control-label {
+    font-weight: 500;
+}

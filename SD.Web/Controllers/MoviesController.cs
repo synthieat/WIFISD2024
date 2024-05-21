@@ -4,11 +4,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SD.Common.Extensions;
+using SD.Core.Applications.Commands;
 using SD.Core.Applications.Queries;
+using SD.Core.Applications.Results;
 using SD.Core.Entities.Movies;
 using SD.Persistence.Repositories.DBContext;
 using SD.Web.Extensions;
@@ -48,11 +51,18 @@ namespace SD.Web.Controllers
         }
 
         // GET: Movies/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(CancellationToken cancellationToken)
         {
-            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Name");
-            ViewData["MediumTypeCode"] = new SelectList(_context.MediumTypes, "Code", "Code");
-            return View();
+            var command = new CreateMovieDtoCommand();
+            var result = await base.Mediator.Send(command, cancellationToken);
+
+            result.Title = string.Empty;
+            result.Rating = Ratings.Medium;
+            result.ReleaseDate = DateTime.Now.Date;
+
+            await this.InitMovieDtoNavigationProperties(null, result.GenreId, result.MediumTypeCode, result.Rating, cancellationToken);
+
+            return View(result);
         }
 
         // POST: Movies/Create
@@ -74,7 +84,7 @@ namespace SD.Web.Controllers
             return View(movie);
         }
 
-        // GET: Movies/Edit/5
+        [HttpGet] // GET: Movies/Edit/5
         public async Task<IActionResult> Edit([FromRoute]Guid? id, CancellationToken cancellationToken)
         {
             
@@ -93,43 +103,8 @@ namespace SD.Web.Controllers
 
             var model = new MovieModel { Movie = result };
 
-            /* Genres, MediumTypes, Ratings für Dropdowns abrufen */
-
-            var genres = HttpContext.Session.Get<IEnumerable<Genre>>(nameof(Genre));
-            if(genres == null)
-            {
-                genres = await base.Mediator.Send(new GetGenresQuery(), cancellationToken);
-                HttpContext.Session.Set<IEnumerable<Genre>>(nameof(genres), genres);
-            }
-            var genreSelectList = new SelectList(genres, nameof(Genre.Id), nameof(Genre.Name), 1);
-
-            var mediumTypes = HttpContext.Session.Get<IEnumerable<MediumType>>(nameof(MediumType));
-            if(mediumTypes == null)
-            {
-                mediumTypes = await base.Mediator.Send(new GetMediumTypesQuery(), cancellationToken);
-                HttpContext.Session.Set<IEnumerable<MediumType>>(nameof(MediumType), mediumTypes);
-            }
-            var mediumTypeSelectList = new SelectList(mediumTypes, nameof(MediumType.Code), nameof(MediumType.Name), "BR");
-
-            var localizedRatings = HttpContext.Session.Get<IEnumerable<KeyValuePair<object, string>>>(nameof(Ratings));
-            if(localizedRatings == null)
-            {
-                localizedRatings = EnumExtensions.EnumToList<Ratings>();
-                HttpContext.Session.Set<IEnumerable<KeyValuePair<object, string>>>(nameof(Ratings), localizedRatings);
-            }
-            var localizedRatingSelectList = new SelectList(localizedRatings, "Key", "Value", 2);
-
-
-            /* ViewData["XY"] == ViewBag.XY */
-            ViewData[nameof(Genre)] = genreSelectList;
-            model.Genre = genreSelectList;
-
-            ViewBag.MediumType = mediumTypeSelectList;
-            model.MediumType = mediumTypeSelectList;
-
-            ViewBag.Ratings = localizedRatingSelectList;
-            model.Ratings = localizedRatingSelectList;
-
+            /* Genres, MediumTypes, Ratings für Dropdowns initialisieren */
+            await this.InitMovieDtoNavigationProperties(model, result.GenreId, result.MediumTypeCode, result.Rating, cancellationToken);
 
             return View(result);
         }
@@ -139,9 +114,9 @@ namespace SD.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,GenreId,MediumTypeCode,Price,ReleaseDate,Rating")] Movie movie)
+        public async Task<IActionResult> Edit([FromRoute]Guid id, [Bind("Id,Title,GenreId,MediumTypeCode,Price,ReleaseDate,Rating")] MovieDto movieDto, CancellationToken cancellationToken)
         {
-            if (id != movie.Id)
+            if (id != movieDto.Id)
             {
                 return NotFound();
             }
@@ -150,25 +125,23 @@ namespace SD.Web.Controllers
             {
                 try
                 {
-                    _context.Update(movie);
-                    await _context.SaveChangesAsync();
+                    var command = new UpdateMovieDtoCommand { Id = id, MovieDto = movieDto };
+                    await base.Mediator.Send(command, cancellationToken);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch 
                 {
-                    if (!MovieExists(movie.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Name", movie.GenreId);
-            ViewData["MediumTypeCode"] = new SelectList(_context.MediumTypes, "Code", "Code", movie.MediumTypeCode);
-            return View(movie);
+
+            var model = new MovieModel { Movie = movieDto };
+            
+            /* Genres, MediumTypes, Ratings für Dropdowns initialisieren */
+            await this.InitMovieDtoNavigationProperties(model, movieDto.GenreId, movieDto.MediumTypeCode, movieDto.Rating, cancellationToken);
+            
+            return View(movieDto);
         }
 
         // GET: Movies/Delete/5
@@ -205,6 +178,52 @@ namespace SD.Web.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
+        private async Task InitMovieDtoNavigationProperties(MovieModel? model, int? genreId = default, string mediumTypeCode = default, Ratings? rating = default, CancellationToken cancellationToken = default)
+        {
+            /* Genres, MediumTypes, Ratings für Dropdowns abrufen */
+
+            var genres = HttpContext.Session.Get<IEnumerable<Genre>>(nameof(Genre));
+            if (genres == null)
+            {
+                genres = await base.Mediator.Send(new GetGenresQuery(), cancellationToken);
+                HttpContext.Session.Set<IEnumerable<Genre>>(nameof(genres), genres);
+            }
+            var genreSelectList = new SelectList(genres, nameof(Genre.Id), nameof(Genre.Name), genreId);
+
+            var mediumTypes = HttpContext.Session.Get<IEnumerable<MediumType>>(nameof(MediumType));
+            if (mediumTypes == null)
+            {
+                mediumTypes = await base.Mediator.Send(new GetMediumTypesQuery(), cancellationToken);
+                HttpContext.Session.Set<IEnumerable<MediumType>>(nameof(MediumType), mediumTypes);
+            }
+            var mediumTypeSelectList = new SelectList(mediumTypes, nameof(MediumType.Code), nameof(MediumType.Name), mediumTypeCode);
+
+            var localizedRatings = HttpContext.Session.Get<IEnumerable<KeyValuePair<object, string>>>(nameof(Ratings));
+            if (localizedRatings == null)
+            {
+                localizedRatings = EnumExtensions.EnumToList<Ratings>();
+                HttpContext.Session.Set<IEnumerable<KeyValuePair<object, string>>>(nameof(Ratings), localizedRatings);
+            }
+            var localizedRatingSelectList = new SelectList(localizedRatings, "Key", "Value", rating);
+
+
+            /* ViewData["XY"] == ViewBag.XY */
+            ViewData[nameof(Genre)] = genreSelectList;
+            ViewBag.MediumType = mediumTypeSelectList;
+            ViewBag.Ratings = localizedRatingSelectList;
+
+
+            if (model != null)
+            {
+                model.Genre = genreSelectList;
+                model.MediumType = mediumTypeSelectList;
+                model.Ratings = localizedRatingSelectList;
+            }
+
+        }
+
 
         private bool MovieExists(Guid id)
         {
