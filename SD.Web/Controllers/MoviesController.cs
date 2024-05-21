@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SD.Common.Extensions;
 using SD.Core.Applications.Queries;
 using SD.Core.Entities.Movies;
 using SD.Persistence.Repositories.DBContext;
+using SD.Web.Extensions;
+using SD.Web.Models.Movies;
 
 namespace SD.Web.Controllers
 {
@@ -21,31 +26,25 @@ namespace SD.Web.Controllers
         }
 
         // GET: Movies
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {            
-            var result = await base.Mediator.Send(new GetMovieDtosQuery());
+            var result = await base.Mediator.Send(new GetMovieDtosQuery(), cancellationToken);
                         
             return View(result);
         }
 
         // GET: Movies/Details/5
-        public async Task<IActionResult> Details([FromRoute]Guid? id)
+        public async Task<IActionResult> Details([FromRoute]Guid? id, CancellationToken cancellationToken)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var movie = await _context.Movies
-                .Include(m => m.Genre)
-                .Include(m => m.MediumType)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
+            var query = new GetMovieDtoQuery { Id = id.Value };
+            var result = await base.Mediator.Send(query, cancellationToken);
 
-            return View(movie);
+            return View(result);
         }
 
         // GET: Movies/Create
@@ -76,21 +75,63 @@ namespace SD.Web.Controllers
         }
 
         // GET: Movies/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit([FromRoute]Guid? id, CancellationToken cancellationToken)
         {
+            
             if (id == null)
             {
                 return NotFound();
             }
 
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
+            var query = new GetMovieDtoQuery { Id = id.Value };
+            var result = await base.Mediator.Send(query, cancellationToken);
+
+            if(result == null)
             {
                 return NotFound();
             }
-            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Name", movie.GenreId);
-            ViewData["MediumTypeCode"] = new SelectList(_context.MediumTypes, "Code", "Code", movie.MediumTypeCode);
-            return View(movie);
+
+            var model = new MovieModel { Movie = result };
+
+            /* Genres, MediumTypes, Ratings für Dropdowns abrufen */
+
+            var genres = HttpContext.Session.Get<IEnumerable<Genre>>(nameof(Genre));
+            if(genres == null)
+            {
+                genres = await base.Mediator.Send(new GetGenresQuery(), cancellationToken);
+                HttpContext.Session.Set<IEnumerable<Genre>>(nameof(genres), genres);
+            }
+            var genreSelectList = new SelectList(genres, nameof(Genre.Id), nameof(Genre.Name), 1);
+
+            var mediumTypes = HttpContext.Session.Get<IEnumerable<MediumType>>(nameof(MediumType));
+            if(mediumTypes == null)
+            {
+                mediumTypes = await base.Mediator.Send(new GetMediumTypesQuery(), cancellationToken);
+                HttpContext.Session.Set<IEnumerable<MediumType>>(nameof(MediumType), mediumTypes);
+            }
+            var mediumTypeSelectList = new SelectList(mediumTypes, nameof(MediumType.Code), nameof(MediumType.Name), "BR");
+
+            var localizedRatings = HttpContext.Session.Get<IEnumerable<KeyValuePair<object, string>>>(nameof(Ratings));
+            if(localizedRatings == null)
+            {
+                localizedRatings = EnumExtensions.EnumToList<Ratings>();
+                HttpContext.Session.Set<IEnumerable<KeyValuePair<object, string>>>(nameof(Ratings), localizedRatings);
+            }
+            var localizedRatingSelectList = new SelectList(localizedRatings, "Key", "Value", 2);
+
+
+            /* ViewData["XY"] == ViewBag.XY */
+            ViewData[nameof(Genre)] = genreSelectList;
+            model.Genre = genreSelectList;
+
+            ViewBag.MediumType = mediumTypeSelectList;
+            model.MediumType = mediumTypeSelectList;
+
+            ViewBag.Ratings = localizedRatingSelectList;
+            model.Ratings = localizedRatingSelectList;
+
+
+            return View(result);
         }
 
         // POST: Movies/Edit/5

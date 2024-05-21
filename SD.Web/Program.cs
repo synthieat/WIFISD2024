@@ -65,6 +65,16 @@ namespace SD.Web
             builder.Services.AddRazorPages()
                             .AddRazorRuntimeCompilation();
 
+            /* Verwendung von Sessions konfigurieren */
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+
+            });
+
                         
             builder.Services.AddControllersWithViews();
             
@@ -88,6 +98,9 @@ namespace SD.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            /* Damit Sessions genutzt werden können */
+            app.UseSession();
 
             app.UseRouting();
                         

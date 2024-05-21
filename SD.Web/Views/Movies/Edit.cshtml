@@ -1,15 +1,29 @@
-﻿@model SD.Core.Entities.Movies.Movie
+﻿@model MovieDto;
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = BasicRes.Edit;
 }
 
-<h1>Edit</h1>
+<h1>@BasicRes.Edit</h1>
 
 <h4>Movie</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <!--
+        <form action="/Movies/Edit/@Model.Id" method="post" >
+            <input type="hidden" id="@Model.Id" />
+            <div class="form-group">
+                 <label class="control-label">@BasicRes.Title</label>
+                 <input type="text" id="Title" name="Title" class=form-control>" />
+
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+        -->
+
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -20,12 +34,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="GenreId" class="control-label"></label>
-                <select asp-for="GenreId" class="form-control" asp-items="ViewBag.GenreId"></select>
+                <select asp-for="GenreId" class="form-control" asp-items="ViewBag.Genre"></select>
                 <span asp-validation-for="GenreId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="MediumTypeCode" class="control-label"></label>
-                <select asp-for="MediumTypeCode" class="form-control" asp-items="ViewBag.MediumTypeCode"></select>
+                <select asp-for="MediumTypeCode" class="form-control" asp-items="ViewBag.MediumType"></select>
                 <span asp-validation-for="MediumTypeCode" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -40,7 +54,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Rating" class="control-label"></label>
-                <select asp-for="Rating" class="form-control"></select>
+                <select asp-for="Rating" class="form-control" asp-items="ViewBag.Ratings"></select>
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -51,7 +65,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">@BasicRes.BackToList</a>
 </div>
 
 @section Scripts {
