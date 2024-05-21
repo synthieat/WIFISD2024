@@ -1,7 +1,8 @@
 ﻿@model MovieDto;
 
 @{
-    ViewData["Title"] = BasicRes.Edit;
+    ViewData["Title"] = "Edit";
+    ViewBag.LocaleName = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
 }
 
 <h1>@BasicRes.Edit</h1>
@@ -52,11 +53,11 @@
                 <input asp-for="ReleaseDate" class="form-control" />
                 <span asp-validation-for="ReleaseDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
+           @*  <div class="form-group">
                 <label asp-for="Rating" class="control-label"></label>
                 <select asp-for="Rating" class="form-control" asp-items="ViewBag.Ratings"></select>
                 <span asp-validation-for="Rating" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -69,5 +70,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial_old");}
 }
