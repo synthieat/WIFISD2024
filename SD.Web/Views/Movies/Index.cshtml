@@ -6,9 +6,9 @@
 <h1>Index</h1>
 
 <p>
-    <a href="/Movies/Create">@BasicRes.CreateNew</a>
+    <a href="/Movies/Create" class="btn btn-sm btn-primary" title="@BasicRes.CreateNew"><i class="fa fa-plus-square"></i>&nbsp;@BasicRes.CreateNew</a>
 </p>
-<table class="table">
+<table class="table table-bordered table-hover table-striped">
     <thead>
         <tr>
             <th>
@@ -54,9 +54,9 @@
                 @item.LocalizedRating
             </td>
             <td>
-                <a href="/Movies/Edit/@item.Id">@BasicRes.Edit</a> |
-                <a href="/Movies/Details/@item.Id">@BasicRes.Details</a> |
-                <a href="/Movies/Delete/@item.Id">@BasicRes.Delete</a>
+                    <a href="/Movies/Edit/@item.Id" class="btn btn-sm btn-warning fa fa-pencil" title="@BasicRes.Edit"></a> |
+                    <a href="/Movies/Details/@item.Id" class="btn btn-sm btn-info fa fa-list" title="@BasicRes.Details"></a> |
+                    <a href="/Movies/Delete/@item.Id" class="btn btn-sm btn-danger fa fa-remove" title="@BasicRes.Delete"></a>
             </td>
         </tr>
 }

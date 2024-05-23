@@ -29,8 +29,9 @@ namespace SD.Core.Entities.Movies
         public Guid Id { get; set; }
 
 
-        [MaxLength(128), MinLength(2)]
-        [Required]
+        [MaxLength(128, ErrorMessageResourceName = "MaxLength", ErrorMessageResourceType = typeof(BasicRes)), 
+            MinLength(2, ErrorMessageResourceName = "MinLength", ErrorMessageResourceType = typeof(BasicRes))]
+        [Required (ErrorMessageResourceName = "IsRequired", ErrorMessageResourceType = typeof(BasicRes))]
         [Display(Name = nameof(MovieBase.Title), ResourceType = typeof(BasicRes))]
         public string Title { get; set; }
 

@@ -28,3 +28,27 @@ dt {
 .control-label {
     font-weight: 500;
 }
+
+.alternating > tbody > tr{
+    background-color: #e6e6e6;
+}
+
+.alternating > tbody > tr:nth-of-type(2n){
+    background-color: #eee;
+}
+
+.alternating2 > tbody > tr:nth-child(odd) {
+    background-color: #c5c5c5;
+    color: #000;
+}
+
+.alternating2 > tbody > tr:nth-child(even) {
+    background-color: #e6e6e6;
+}
+
+.table {
+    --bs-table-hover-color: #258cfb;
+    --bs-table-hover-bg:#e29090;
+}
+
+

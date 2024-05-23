@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +20,10 @@ using SD.Web.Models.Movies;
 
 namespace SD.Web.Controllers
 {
+    [Authorize]
     public class MoviesController : BaseController
     {
-        private readonly MovieDbContext _context;
-
-        public MoviesController(MovieDbContext context)
-        {
-            _context = context;
-        }
+        public MoviesController(){}
 
         // GET: Movies
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
@@ -65,24 +62,24 @@ namespace SD.Web.Controllers
             return View(result);
         }
 
-        // POST: Movies/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,GenreId,MediumTypeCode,Price,ReleaseDate,Rating")] Movie movie)
-        {
-            if (ModelState.IsValid)
-            {
-                movie.Id = Guid.NewGuid();
-                _context.Add(movie);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Name", movie.GenreId);
-            ViewData["MediumTypeCode"] = new SelectList(_context.MediumTypes, "Code", "Code", movie.MediumTypeCode);
-            return View(movie);
-        }
+        //// POST: Movies/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,Title,GenreId,MediumTypeCode,Price,ReleaseDate,Rating")] Movie movie)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        movie.Id = Guid.NewGuid();
+        //        _context.Add(movie);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Name", movie.GenreId);
+        //    ViewData["MediumTypeCode"] = new SelectList(_context.MediumTypes, "Code", "Code", movie.MediumTypeCode);
+        //    return View(movie);
+        //}
 
         [HttpGet] // GET: Movies/Edit/5
         public async Task<IActionResult> Edit([FromRoute]Guid? id, CancellationToken cancellationToken)
@@ -145,37 +142,33 @@ namespace SD.Web.Controllers
         }
 
         // GET: Movies/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
         {
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var movie = await _context.Movies
-                .Include(m => m.Genre)
-                .Include(m => m.MediumType)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
+            var query = new GetMovieDtoQuery { Id = id.Value };
+            var result = await base.Mediator.Send(query, cancellationToken);
+
+            if (result == null)
             {
                 return NotFound();
             }
-
-            return View(movie);
+                                    
+            return View(result);
         }
 
         // POST: Movies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id, CancellationToken cancellationToken)
         {
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie != null)
-            {
-                _context.Movies.Remove(movie);
-            }
-
-            await _context.SaveChangesAsync();
+            var command = new DeleteMovieDtoCommand { Id = id };
+            await base.Mediator.Send(command, cancellationToken);
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -222,12 +215,6 @@ namespace SD.Web.Controllers
                 model.Ratings = localizedRatingSelectList;
             }
 
-        }
-
-
-        private bool MovieExists(Guid id)
-        {
-            return _context.Movies.Any(e => e.Id == id);
         }
     }
 }
