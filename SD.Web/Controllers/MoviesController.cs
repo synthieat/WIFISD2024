@@ -20,7 +20,7 @@ using SD.Web.Models.Movies;
 
 namespace SD.Web.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class MoviesController : BaseController
     {
         public MoviesController(){}

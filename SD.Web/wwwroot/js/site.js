@@ -3,6 +3,62 @@
 
 // Write your JavaScript code.
 
+
+function ShowDetailsModal(tableName, modalName, ctl, showDelete, rowsToShow)
+{   
+    var $row = $(ctl).parent().parent();
+    var $columns = $row.find('td');
+
+
+    var $table = $('#' + tableName);
+    var $thRows = $table.find('th');
+
+    var $modal = $('#' + modalName);
+    var $modalBody = $modal.find('#DetailsModalBody');
+
+    /* Bestehende Childs löschen */
+    $modalBody.empty();
+
+    for (var i = 0; i < rowsToShow.length; i++)
+    {
+        $modalBody.append($('<dt class="col-md-3">').text($thRows[rowsToShow[i]].innerText));
+        $modalBody.append($('<dd class="col-md-9">').text($columns[rowsToShow[i]].innerText));
+    }
+
+    if (showDelete) {
+        var $id = $modal.find('#DetailsModalId');
+        /* Wert aus data-Id in modal id schreiben */
+        var idValue = $(ctl).attr('data-id');
+        $id.val(idValue);
+    }
+
+
+    /* Modalen Dialog initialisieren und aufrufen */
+    var options =
+    {
+        "backdrop": "static",
+        "keyboard": true
+    }
+    var modal = new bootstrap.Modal(document.getElementById(modalName), options);
+    modal.show();
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //document.addEventListener("DOMContentLoaded", function () {
 //    var movieTable = document.getElementById('movieTable');
 //    var deleteAnchors1;

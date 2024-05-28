@@ -51,4 +51,6 @@ dt {
     --bs-table-hover-bg:#e29090;
 }
 
-
+.btn {
+    border-radius: 0.25rem;
+}
