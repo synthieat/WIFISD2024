@@ -13,6 +13,7 @@ using SD.Rescources.Attributes;
 using SD.Rescources;
 using System.Globalization;
 using Microsoft.Extensions.Options;
+using SD.Infrastructure.Extensions.WebSecurity;
 
 namespace SD.Web
 {
@@ -77,7 +78,14 @@ namespace SD.Web
 
                         
             builder.Services.AddControllersWithViews();
-            
+
+
+            /* Add Content-Secure-Policies for 'self' (this client app) 
+             * exclude swagger because it don't works with our settings but will be not used productive
+             * allowedCorsOrigins are not needed as long no external host will use/frame the API from this web application */
+            builder.Services.AddSecurityHeaders(allowedCspOrigins: null, excludePathsStartsWith: new[] { "/swagger" });
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -103,8 +111,12 @@ namespace SD.Web
             app.UseSession();
 
             app.UseRouting();
-                        
+
+           // app.UseCors();
+
             app.UseAuthorization();
+
+            app.UseSecurityHeadersMiddleware();
 
             app.MapControllerRoute(
                 name: "default",
