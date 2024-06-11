@@ -17,7 +17,7 @@
             <th>
                 @BasicRes.MediumType
             </th>
-            <th>
+            <th style="background-color: black">
                 @BasicRes.Title
             </th>
             <th>
@@ -54,8 +54,8 @@
                 @item.LocalizedRating
             </td>
             <td>
-                    <a href="/Movies/Edit/@item.Id" class="btn btn-sm btn-warning fa fa-pencil" title="@BasicRes.Edit"></a> |
-                    <a href="/Movies/Details/@item.Id" class="btn btn-sm btn-info fa fa-list" title="@BasicRes.Details"></a> |
+                    <a href="/Movies/Edit/@item.Id" class="btn btn-sm btn-warning fa fa-pencil" onclick="alert('Hallo Welt');'" data-id="@item.Id" data-name="Edit" title="@BasicRes.Edit"></a> |
+                    <a href="/Movies/Details/@item.Id" class="btn btn-sm btn-info fa fa-list" style="font-size: 20px" data-name="Details" title="@BasicRes.Details"></a> |
                     <a href="/Movies/Delete/@item.Id" class="btn btn-sm btn-danger fa fa-remove" data-id="@item.Id" data-name="Delete" title="@BasicRes.Delete"></a>
             </td>
         </tr>
@@ -65,6 +65,10 @@
 
 <!-- Modal Dialog -->
 @(await Html.PartialAsync("_DetailsModal", new ViewDataDictionary(ViewData) { { "ModalId", "MovieDetailsModal" }, { "Action", "Delete" }, { "Controller", "Movies" } }))
+
+<div id="EditMoviePartialView">
+
+</div>
 
 @section Scripts{
     <script src="~/js/application/MovieIndex.js"></script>

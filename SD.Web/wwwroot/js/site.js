@@ -6,6 +6,9 @@
 
 function ShowDetailsModal(tableName, modalName, ctl, showDelete, rowsToShow)
 {   
+    const DETAILSMODALTITLE = 'DetailsModalTitle';
+    const DELETEBUTTON = 'DeleteButton';
+
     var $row = $(ctl).parent().parent();
     var $columns = $row.find('td');
 
@@ -25,11 +28,23 @@ function ShowDetailsModal(tableName, modalName, ctl, showDelete, rowsToShow)
         $modalBody.append($('<dd class="col-md-9">').text($columns[rowsToShow[i]].innerText));
     }
 
+    
     if (showDelete) {
         var $id = $modal.find('#DetailsModalId');
         /* Wert aus data-Id in modal id schreiben */
         var idValue = $(ctl).attr('data-id');
         $id.val(idValue);
+
+        /* Title dynamisch anpassen */
+        var titleText = $('#DeleteTitle').text();
+        $('#' + DETAILSMODALTITLE).text(titleText);
+
+        /* Delete Button einblenden mit class="visible" */
+        $('#' + DELETEBUTTON).attr("class", "visible btn btn-secondary");
+    } else
+    {
+        $('#' + DETAILSMODALTITLE).text($('#DetailsTitle').text());
+        $('#' + DELETEBUTTON).attr("class", "invisible");
     }
 
 

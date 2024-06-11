@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SD.Application.Extensions;
 using SD.Application.Movies;
+using SD.Infrastructure.Extensions.WebSecurity;
 using SD.Persistence.Extensions;
 using SD.Persistence.Repositories.DBContext;
 using SD.Rescources;
@@ -75,6 +76,7 @@ namespace SD.Web
                         
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddSecurityHeaders(allowedCorsOrigins: null, excludePathsStartsWith: new[] { "/swagger" });
                  
 
             var app = builder.Build();
@@ -106,6 +108,8 @@ namespace SD.Web
            // app.UseCors();
 
             app.UseAuthorization();
+
+            app.UseSecurityHeadersMiddleware();
                         
             app.MapControllerRoute(
                 name: "default",

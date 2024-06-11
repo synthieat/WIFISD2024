@@ -103,6 +103,7 @@ namespace SD.Web.Controllers
             /* Genres, MediumTypes, Ratings für Dropdowns initialisieren */
             await this.InitMovieDtoNavigationProperties(model, result.GenreId, result.MediumTypeCode, result.Rating, cancellationToken);
 
+            //return PartialView("_EditModal", result);
             return View(result);
         }
 

@@ -1,8 +1,10 @@
 ﻿<div class="modal fade" id="@ViewBag.ModalId" tabindex="-1" role="dialog" aria-labelledby="DeleteLabel" aria-hidden="true">
+	<span id="DeleteTitle" class="invisible">@BasicRes.DeleteMessage</span>
+	<span id="DetailsTitle" class="invisible">@BasicRes.Details</span>
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
-				<h6 class="modal-title" id="DetailsModalTitle">@BasicRes.DeleteMessage</h6>
+			<div class="modal-header">				
+				<h6 class="modal-title" id="DetailsModalTitle"></h6>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
@@ -17,7 +19,7 @@
 					<form asp-action="@ViewData["Action"]" asp-controller="@ViewData["Controller"]" method="post">
 						
 						<input type="hidden" id="DetailsModalId" name="Id" />
-						<input type="submit" value="@BasicRes.Delete" class="btn btn-secondary" />
+						<input type="submit" value="@BasicRes.Delete" id="DeleteButton" class="btn btn-secondary" />
 						
 						@Html.AntiForgeryToken()
 					</form>
