@@ -1,19 +1,15 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using SD.Application.Movies;
-using SD.Persistence.Repositories.DBContext;
-using SD.Web.Data;
-using SD.Persistence.Extensions;
-using SD.Application.Extensions;
-using System.Configuration;
-using System.Reflection;
-using SD.Rescources.Attributes;
-using SD.Rescources;
-using System.Globalization;
 using Microsoft.Extensions.Options;
-using SD.Infrastructure.Extensions.WebSecurity;
+using SD.Application.Extensions;
+using SD.Application.Movies;
+using SD.Persistence.Extensions;
+using SD.Persistence.Repositories.DBContext;
+using SD.Rescources;
+using SD.Rescources.Attributes;
+using SD.Web.Data;
+using System.Globalization;
+using System.Reflection;
 
 namespace SD.Web
 {
@@ -79,12 +75,7 @@ namespace SD.Web
                         
             builder.Services.AddControllersWithViews();
 
-
-            /* Add Content-Secure-Policies for 'self' (this client app) 
-             * exclude swagger because it don't works with our settings but will be not used productive
-             * allowedCorsOrigins are not needed as long no external host will use/frame the API from this web application */
-            builder.Services.AddSecurityHeaders(allowedCspOrigins: null, excludePathsStartsWith: new[] { "/swagger" });
-
+                 
 
             var app = builder.Build();
 
@@ -115,9 +106,7 @@ namespace SD.Web
            // app.UseCors();
 
             app.UseAuthorization();
-
-            app.UseSecurityHeadersMiddleware();
-
+                        
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Movies}/{action=Index}/{id?}");
