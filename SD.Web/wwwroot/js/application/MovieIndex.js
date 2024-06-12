@@ -39,7 +39,7 @@
         $EditMoviePartialView.empty();
         var url = "/Movies/Edit/" + idValue;
 
-        /* Version with JQuery 
+        /* Version with JQuery (XMLHttpRequest (XHR))
         $.get(url, function (data) {
             $EditMoviePartialView.html(data);
             $.validator.unobtrusive.parse($EditMoviePartialView);
@@ -47,7 +47,7 @@
         });
         */
 
-        /* Version with Javascript fetch API */
+        /* Version with Javascript und fetch API */
         fetch(url)
             .then(response => { return response.text(); })
             .then(data => $EditMoviePartialView.html(data)) /* Response von Partial View in Container Div einfügen */
