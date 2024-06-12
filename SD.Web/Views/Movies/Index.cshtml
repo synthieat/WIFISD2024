@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<MovieDto>
 @{
     ViewData["Title"] = "Index";
+    ViewBag.LocaleName = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
 }
 
 <h1>Index</h1>
@@ -66,10 +67,12 @@
 <!-- Modal Dialog -->
 @(await Html.PartialAsync("_DetailsModal", new ViewDataDictionary(ViewData) { { "ModalId", "MovieDetailsModal" }, { "Action", "Delete" }, { "Controller", "Movies" } }))
 
-<div id="EditMoviePartialView">
+<div id="EditMoviePartialView"></div>
 
-</div>
-
-@section Scripts{
+@section Scripts{    
     <script src="~/js/application/MovieIndex.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }    
 }
+

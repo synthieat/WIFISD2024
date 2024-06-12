@@ -29,31 +29,57 @@
     })
 
     var $editHyperLinks = $movieTable.find('a[data-name=Edit]');
-    //$editHyperLinks.on('click', function () {
+    $editHyperLinks.on('click', function () {
 
-    //    /* Wert aus data-Id in modal id schreiben */
-    //    var idValue = $(this).attr('data-id');
+        /* Wert aus data-Id in modal id schreiben */
+        var idValue = $(this).attr('data-id');
 
 
-    //    var $EditMoviePartialView = $("#EditMoviePartialView");
+        var $EditMoviePartialView = $("#EditMoviePartialView");
+        $EditMoviePartialView.empty();
+        var url = "/Movies/Edit/" + idValue;
 
-    //    //$EditMoviePartialView.load("/Movies/Edit/" + idValue);  
+        /* Version with JQuery 
+        $.get(url, function (data) {
+            $EditMoviePartialView.html(data);
+            $.validator.unobtrusive.parse($EditMoviePartialView);
+            ShowMovieEditModal();
+        });
+        */
 
-    //    /* Modalen Dialog initialisieren und aufrufen */
-    //    var options =
-    //    {
-    //        "backdrop": "static",
-    //        "keyboard": true
-    //    }
-        
-        
-    //    var modal = new bootstrap.Modal(document.getElementById('MovieEditModal'), options);
-    //    modal.show();
-
-    //    return false;
-    //})
+        /* Version with Javascript fetch API */
+        fetch(url)
+            .then(response => { return response.text(); })
+            .then(data => $EditMoviePartialView.html(data)) /* Response von Partial View in Container Div einfügen */
+            .then(x => $.validator.unobtrusive.parse($EditMoviePartialView)) /* JQuery Validator initialisieren */
+            .then(x => ShowMovieEditModal()); /* Modalen Dialog öffnen */
+      
+        return false;
+    })
 
 }) 
+
+async function loadMovie(id) {
+    var url = "/Movies/Edit/" + id;
+    
+    alert(response);    
+}
+
+function ShowMovieEditModal () {
+    var options =
+    {
+        "backdrop": "static",
+        "keyboard": true
+    }
+
+    /* Modalen Dialog initialisieren und aufrufen */
+    var movieEditModal = document.getElementById('MovieEditModal');
+
+    var modal = new bootstrap.Modal(movieEditModal, options);
+    modal.show();
+
+    return false
+}
 
 
 document.addEventListener("DOMContentLoaded", function ()
