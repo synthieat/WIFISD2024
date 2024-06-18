@@ -6,9 +6,8 @@
 				<h5 class="modal-title">@BasicRes.Edit</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<form asp-action="Edit" asp-controller="Movies" method="post">
+            <form asp-action="Edit" asp-controller="Movies" method="post">
 				<div class="modal-body">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
                     <div class="form-group">
                         <label class="control-label">@BasicRes.Title</label>
@@ -43,6 +42,7 @@
 				</div>
 				<div class="modal-footer">				
 					<div id="DetailsModalControls">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 						<input type="submit" value="@BasicRes.Save" class="btn btn-primary" />
 					     @Html.AntiForgeryToken()
 					</div>
@@ -50,6 +50,5 @@
 				</div>
 			</form>
 		</div>
-
 	</div>
 </div>

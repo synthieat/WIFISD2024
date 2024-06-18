@@ -29,33 +29,33 @@
     })
 
     var $editHyperLinks = $movieTable.find('a[data-name=Edit]');
+
     $editHyperLinks.on('click', function () {
 
-        /* Wert aus data-Id in modal id schreiben */
         var idValue = $(this).attr('data-id');
 
-
-        var $EditMoviePartialView = $("#EditMoviePartialView");
+        var $EditMoviePartialView = $('#EditMoviePartialView'); 
         $EditMoviePartialView.empty();
+
         var url = "/Movies/Edit/" + idValue;
 
-        /* Version with JQuery (XMLHttpRequest (XHR))
-        $.get(url, function (data) {
-            $EditMoviePartialView.html(data);
-            $.validator.unobtrusive.parse($EditMoviePartialView);
-            ShowMovieEditModal();
-        });
-        */
+        //$.get(url, function (data) {
+        //    $EditMoviePartialView.append($(data);
+        //    $.validator.unobtrusive.parse($EditMoviePartialView);
+        //    ShowMovieEditModal();
+        //});
 
-        /* Version with Javascript und fetch API */
+        //return false;
+
+        /* Javascript mit fetch API */
         fetch(url)
             .then(response => { return response.text(); })
             .then(data => $EditMoviePartialView.html(data)) /* Response von Partial View in Container Div einfügen */
-            .then(x => $.validator.unobtrusive.parse($EditMoviePartialView)) /* JQuery Validator initialisieren */
+            .then(x => $.validator.unobtrusive.parse($EditMoviePartialView)) /* JQuery Validator intialisieren */
             .then(x => ShowMovieEditModal()); /* Modalen Dialog öffnen */
-      
+
         return false;
-    })
+    })      
 
 }) 
 
@@ -65,21 +65,24 @@ async function loadMovie(id) {
     alert(response);    
 }
 
-function ShowMovieEditModal () {
+function ShowMovieEditModal() {
+
     var options =
     {
         "backdrop": "static",
-        "keyboard": true
+            "keyboard": true
     }
 
-    /* Modalen Dialog initialisieren und aufrufen */
+    /* Modalen Dialog für das Editieren initialisieren */
     var movieEditModal = document.getElementById('MovieEditModal');
 
     var modal = new bootstrap.Modal(movieEditModal, options);
     modal.show();
-
-    return false
+    return false;
 }
+
+
+
 
 
 document.addEventListener("DOMContentLoaded", function ()

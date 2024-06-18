@@ -13,6 +13,8 @@ namespace SD.Core.Applications.Queries
         public int? GenreId { get; set; }   
         public string? MediumTypeCode { get; set; }
 
+        public string? SearchCriteria { get; set; }
+
         public int Take { get; set; } = 10;
         public int Skip { get; set; } = 0;
     }

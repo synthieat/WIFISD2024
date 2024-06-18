@@ -7,7 +7,26 @@
 <h1>Index</h1>
 
 <p>
-    <a href="/Movies/Create" class="btn btn-sm btn-primary" title="@BasicRes.CreateNew"><i class="fa fa-plus-square"></i>&nbsp;@BasicRes.CreateNew</a>
+    <form method="get" href="/Movies/Index">
+    <div class="form-group row ">
+    
+        <div class="col-md-2">
+            <a href="/Movies/Create" class="btn btn-primary" title="@BasicRes.CreateNew"><i class="fa fa-plus-square"></i>&nbsp;@BasicRes.CreateNew</a> &nbsp;
+        </div>
+
+        
+        <div class="col-md-8">
+                <input type="text" class="form-control" name="SearchCriteria" value="@ViewBag.SearchCriteria" />
+        </div>
+            <div class="col-md-2">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <button type="submit" class="btn btn-info" value="@BasicRes.Search"><i class="fa fa-search"></i></>
+            </div>
+
+
+
+        </div>
+    </form>
 </p>
 <table id="MovieTable" class="table table-bordered table-hover table-striped">
     <thead>
@@ -55,7 +74,7 @@
                 @item.LocalizedRating
             </td>
             <td>
-                    <a href="/Movies/Edit/@item.Id" class="btn btn-sm btn-warning fa fa-pencil" onclick="alert('Hallo Welt');'" data-id="@item.Id" data-name="Edit" title="@BasicRes.Edit"></a> |
+                    <a href="/Movies/Edit/@item.Id" class="btn btn-sm btn-warning fa fa-pencil" data-id="@item.Id" data-name="Edit" title="@BasicRes.Edit"></a> |
                     <a href="/Movies/Details/@item.Id" class="btn btn-sm btn-info fa fa-list" style="font-size: 20px" data-name="Details" title="@BasicRes.Details"></a> |
                     <a href="/Movies/Delete/@item.Id" class="btn btn-sm btn-danger fa fa-remove" data-id="@item.Id" data-name="Delete" title="@BasicRes.Delete"></a>
             </td>

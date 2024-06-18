@@ -58,6 +58,11 @@ namespace SD.Application.Movies
                 .Where(w => (string.IsNullOrWhiteSpace(request.MediumTypeCode) || w.MediumTypeCode.Contains(request.MediumTypeCode)) 
                        && (!request.GenreId.HasValue || w.GenreId == request.GenreId))
                 .Take(request.Take).Skip(request.Skip);
+
+            if (!string.IsNullOrWhiteSpace(request.SearchCriteria))
+            {
+                movieQuery = movieQuery.Where(w => w.Title.Contains(request.SearchCriteria) || w.MediumType.Name.Contains(request.SearchCriteria) || w.Genre.Name.Contains(request.SearchCriteria));
+            }
             
             var result = await movieQuery.Select(s => MovieDto.MapFrom(s)).ToListAsync(cancellationToken);
 

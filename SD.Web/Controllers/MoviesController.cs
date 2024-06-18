@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GridMvc.Server;
+using GridShared;
+using GridShared.Sorting;
+using GridShared.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -15,6 +19,8 @@ using SD.Core.Applications.Queries;
 using SD.Core.Applications.Results;
 using SD.Core.Entities.Movies;
 using SD.Persistence.Repositories.DBContext;
+using SD.Rescources;
+using SD.Web.Components;
 using SD.Web.Extensions;
 using SD.Web.Models.Movies;
 
@@ -26,12 +32,89 @@ namespace SD.Web.Controllers
         public MoviesController(){}
 
         // GET: Movies
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        public async Task<IActionResult> Index([FromQuery] string? SearchCriteria, CancellationToken cancellationToken)
         {            
-            var result = await base.Mediator.Send(new GetMovieDtosQuery(), cancellationToken);
+            var result = await base.Mediator.Send(new GetMovieDtosQuery { SearchCriteria = SearchCriteria }, cancellationToken);
+
+            ViewBag.SearchCriteria = SearchCriteria;    
                         
             return View(result);
         }
+
+
+        public async Task<IActionResult>IndexGrid(string gridState = "", CancellationToken cancellationToken = default)
+        {
+            string returnUrl = "/Movies/IndexGrid";
+            IQueryCollection query = HttpContext.Request.Query;
+
+            if (!string.IsNullOrWhiteSpace(gridState))
+            {
+                try
+                {
+                    query = new QueryCollection(StringExtensions.GetQuery(gridState));
+                }
+                catch (Exception)
+                {
+                    // do nothing, gridState was not a valid state
+                }
+            }
+
+            ViewBag.ActiveMenuTitle = "GridMVC .NETCore";
+            var localeId = System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+
+            Action<IGridColumnCollection<MovieDto>> columns = c =>
+            {
+                /* Adding not mapped column, that render body, using inline Razor html helper */
+                //c.Add()
+                //    .Encoded(false)
+                //    .Sanitized(false)
+                //    .SetWidth(60)
+                //    .Css("hidden-xs")
+                //    .RenderComponentAs<ButtonCellViewComponent>(returnUrl);
+
+                /* Adding "Id" column: */
+                c.Add(o => o.Id)
+                 .Titled("Id")
+                 .SetWidth(150);
+
+                /* Adding "ReleaseDate" column: */
+                c.Add(o => o.ReleaseDate)
+                    .Titled(BasicRes.ReleaseDate)
+                    .SortInitialDirection(GridSortDirection.Descending)
+                    .ThenSortByDescending(o => o.Title)
+                    .SetCellCssClassesContraint(o => o.ReleaseDate >= DateTime.Parse("1997-01-01") ? "red" : "")
+                    .Format("{0:yyyy-MM-dd}")
+                    .SetWidth(110)
+                    .Max(true).Min(true);
+
+                /* Adding "Title" column: */
+                c.Add(o => o.Title)
+                    .Titled(BasicRes.Title)
+                    .ThenSortByDescending(o => o.GenreName)
+                    .ThenSortByDescending(o => o.MediumTypeName)
+                    .SetWidth(250)
+                    .Max(true).Min(true);
+            };
+
+            var movieDtos = (await this.Mediator.Send(new GetMovieDtosQuery(), cancellationToken));
+            var gridServer = new GridServer<MovieDto>(movieDtos, query, false, "moviesGrid", columns, 10, localeId)
+                .Sortable()
+                .Filterable()
+                .WithMultipleFilters()
+                .Groupable()
+                .ClearFiltersButton(true)
+                .Selectable(true)
+                .SetStriped(true)
+                .ChangePageSize(true)
+                .WithGridItemsCount();
+
+            return View(gridServer.Grid);
+
+
+        }
+
+
+
 
         // GET: Movies/Details/5
         public async Task<IActionResult> Details([FromRoute]Guid? id, CancellationToken cancellationToken)
@@ -102,9 +185,8 @@ namespace SD.Web.Controllers
 
             /* Genres, MediumTypes, Ratings für Dropdowns initialisieren */
             await this.InitMovieDtoNavigationProperties(model, result.GenreId, result.MediumTypeCode, result.Rating, cancellationToken);
-
+                        
             return PartialView("_EditModal", result);
-            // return View(result);
         }
 
         // POST: Movies/Edit/5
