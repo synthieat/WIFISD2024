@@ -122,6 +122,7 @@ namespace SD.Infrastructure.Extensions.WebSecurity
             _policy.SetHeaders[ContentSecurityPolicyConstants.Header] = new StringValues(
                 $"default-src 'self' {allowedOriginsString};" +
                 "script-src 'self';" +
+                "connect-src 'self' http://localhost:* ws://localhost:* wss://localhost:*;" +
                 "style-src 'self';" +
                 "font-src 'self';" +
                 $"img-src 'self' data: {allowedOriginsString};" +
