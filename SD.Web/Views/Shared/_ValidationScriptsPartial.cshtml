@@ -23,26 +23,9 @@
 <environment exclude="Development">
     <script src="~/lib/jquery-validation-globalize.1.1.0/jquery.validate.globalize.min.js"></script>
  </environment>
+
+<script src="~/js/globalize/jquery-globalize-@(ViewBag.LocaleName).js"></script>
+
 <!-- fetch files
      Load latest cldr-data => npm install cldr-data
 -->
-<script>
-    $.when(
-        $.getJSON("/lib/cldr-data/supplemental/likelySubtags.json"),
-        $.getJSON("/lib/cldr-data/supplemental/numberingSystems.json"),
-        $.getJSON("/lib/cldr-data/supplemental/timeData.json"),
-        $.getJSON("/lib/cldr-data/supplemental/weekData.json"),
-        $.getJSON("/lib/cldr-data/main/@ViewBag.LocaleName/numbers.json"),
-        $.getJSON("/lib/cldr-data/main/@ViewBag.LocaleName/ca-gregorian.json"),
-        $.getJSON("/lib/cldr-data/main/@ViewBag.LocaleName/timeZoneNames.json"),
-    ).then(function () {
-        console.log("start slicing");
-        return [].slice.apply(arguments, [0]).map(function (result) {
-            console.log("slicing done");
-            return result[0];
-        });
-    }).then(Globalize.load).then(function () {
-        Globalize.locale("@(ViewBag.LocaleName)");
-        console.log("Locale set to de");
-    }).then(console.log("LOADED EVERYTHING"));
-</script>

@@ -120,9 +120,9 @@ namespace SD.Infrastructure.Extensions.WebSecurity
 
 #pragma warning disable CS8601 // Possible null reference assignment.
             _policy.SetHeaders[ContentSecurityPolicyConstants.Header] = new StringValues(
-                $"default-src 'self' {allowedOriginsString}" +                   
-                $"script-src 'self'; " +
-                "style-src 'self' ;" +
+                $"default-src 'self' {allowedOriginsString};" +
+                "script-src 'self';" +
+                "style-src 'self';" +
                 "font-src 'self';" +
                 $"img-src 'self' data: {allowedOriginsString};" +
                 "form-action 'self';" +
