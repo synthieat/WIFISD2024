@@ -5,6 +5,14 @@
 }
 @model ISGrid
 
+<environment names="Development">
+    <link href="~/css/gridmvc.css" rel="stylesheet" type="text/css" />
+</environment>
+<environment names="Staging.Production">
+    <link href="~/css/gridmvc.min.css" rel="stylesheet" type="text/css" />
+</environment>
+
+
 <div class="row">
     <div class="col-md-12">
         <p>
@@ -19,3 +27,8 @@
         <grid model="@Model" />
     </div>
 </div>
+
+
+@section Scripts {
+    <script src="~/js/application/gridmvc.js" ></script>
+}

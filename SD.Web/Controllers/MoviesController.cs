@@ -74,8 +74,8 @@ namespace SD.Web.Controllers
 
                 /* Adding "Id" column: */
                 c.Add(o => o.Id)
-                 .Titled("Id")
-                 .SetWidth(150);
+                 .Titled("Id");
+                 
 
                 /* Adding "ReleaseDate" column: */
                 c.Add(o => o.ReleaseDate)
@@ -84,7 +84,6 @@ namespace SD.Web.Controllers
                     .ThenSortByDescending(o => o.Title)
                     .SetCellCssClassesContraint(o => o.ReleaseDate >= DateTime.Parse("1997-01-01") ? "red" : "")
                     .Format("{0:yyyy-MM-dd}")
-                    .SetWidth(110)
                     .Max(true).Min(true);
 
                 /* Adding "Title" column: */
@@ -92,7 +91,6 @@ namespace SD.Web.Controllers
                     .Titled(BasicRes.Title)
                     .ThenSortByDescending(o => o.GenreName)
                     .ThenSortByDescending(o => o.MediumTypeName)
-                    .SetWidth(250)
                     .Max(true).Min(true);
             };
 
