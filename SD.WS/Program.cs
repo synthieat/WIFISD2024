@@ -1,7 +1,6 @@
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SD.Application.Authentication;
 using SD.Application.Extensions;
@@ -51,7 +50,7 @@ namespace SD.WS
             {
                 g.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
                 {
-                    Title = "Wifie SW-Developer 2023-2024",
+                    Title = "Wifi SW-Developer 2023-2024",
                     Version = "v1",
                     Contact = new Microsoft.OpenApi.Models.OpenApiContact { Email = "horst.schneider@hotmail.com", Name = "Horst Schneider" }
                 });
