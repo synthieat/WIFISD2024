@@ -113,7 +113,7 @@ namespace SD.Web
                         
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Movies}/{action=IndexGrid}/{id?}");
+                pattern: "{controller=Movies}/{action=Index}/{id?}");
 
             app.MapRazorPages();
 
