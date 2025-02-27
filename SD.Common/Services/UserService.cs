@@ -11,8 +11,20 @@ namespace SD.Common.Services
     public class UserService : IUserService
     {
         /* Users als Mockup */
-        private List<User> users = new List<User>
-        {
+        //private readonly List<User> users = new List<User>
+        //{
+        //    new User
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        FirstName = "Test",
+        //        LastName = "User",
+        //        UserName = "Test",
+        //        Password = new NetworkCredential("Test", "12345").SecurePassword
+        //    }
+        //};
+
+        private readonly List<User> users =
+        [
             new User
             {
                 Id = Guid.NewGuid(),
@@ -21,7 +33,7 @@ namespace SD.Common.Services
                 UserName = "Test",
                 Password = new NetworkCredential("Test", "12345").SecurePassword
             }
-        };
+        ];
 
 
         public async Task<User> Authenticate(string username, string password, CancellationToken cancellationToken)

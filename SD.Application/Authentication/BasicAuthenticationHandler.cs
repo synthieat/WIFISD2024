@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using Microsoft.Extensions.Primitives;
 
 namespace SD.Application.Authentication
 {
@@ -17,8 +18,7 @@ namespace SD.Application.Authentication
         public BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
                                           ILoggerFactory logger,
                                           UrlEncoder encoder,
-                                          ISystemClock clock,
-                                          IUserService userService) : base (options, logger, encoder, clock)
+                                          IUserService userService) : base(options, logger, encoder)
         {
             this.userService = userService;
         }
@@ -27,7 +27,7 @@ namespace SD.Application.Authentication
         {
             if (!Request.Headers.ContainsKey("Authorization"))
             {
-                Response.Headers.Add("WWW-Authenticate", "Basic realm=\"\"");
+                Response.Headers.Append(new KeyValuePair<string, StringValues>("WWW-Authenticate", "Basic realm=\"\""));
                 return await Task.FromResult(AuthenticateResult.Fail("Missing Authorization Header!"));
             }
 
@@ -35,6 +35,7 @@ namespace SD.Application.Authentication
 
             try
             {
+                // AuthenticationHeaderValue.TryParse(Request.Headers.Authorization, out AuthenticationHeaderValue authHeader);
                 var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
                 var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
                 var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);

@@ -46,11 +46,11 @@ namespace SD.Web
             {
                 var supportedCultuers = new List<CultureInfo>
                 {
-                    new CultureInfo("de"),
-                    new CultureInfo("de-AT"),
-                    new CultureInfo("de-DE"),
-                    new CultureInfo("de-CH"),
-                    new CultureInfo("en")
+                    new ("de"),
+                    new ("de-AT"),
+                    new ("de-DE"),
+                    new ("de-CH"),
+                    new ("en")
                 };
 
                 options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("de");
@@ -76,7 +76,7 @@ namespace SD.Web
                         
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddSecurityHeaders(allowedCorsOrigins: null, excludePathsStartsWith: new[] { "/swagger" });
+            builder.Services.AddSecurityHeaders(allowedCorsOrigins: null, excludePathsStartsWith: ["/swagger"]);
                  
 
             var app = builder.Build();

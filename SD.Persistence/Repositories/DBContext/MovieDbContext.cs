@@ -131,6 +131,7 @@ namespace SD.Persistence.Repositories.DBContext
             if(currentDirectory.IndexOf("bin") > -1)
             {
                 currentDirectory = currentDirectory.Substring(0, currentDirectory.IndexOf("bin"));
+                // currentDirectory = currentDirectory[..currentDirectory.IndexOf("bin")];
             }
 #endif
 
